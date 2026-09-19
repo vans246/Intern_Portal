@@ -1,6 +1,18 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3000';
+const resolveApiBaseUrl = () => {
+    if (import.meta.env.VITE_API_URL) {
+        return import.meta.env.VITE_API_URL;
+    }
+
+    if (typeof window === 'undefined') {
+        return 'http://localhost:3000';
+    }
+
+    return window.location.origin.replace(/:\d+$/, ':3000');
+};
+
+const API_BASE_URL = resolveApiBaseUrl();
 
 // Configure an axios instance for the API
 const apiClient = axios.create({

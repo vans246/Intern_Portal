@@ -43,7 +43,7 @@ export function AuthProvider({ children }) {
       const data = await login(email, password);
 
       // Assumes backend might return { token, user } or similar structure
-      const userToken = data.token;
+      const userToken = data.token || localStorage.getItem('token');
       const userData = data.user || data;
 
       if (userToken) {

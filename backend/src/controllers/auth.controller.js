@@ -135,10 +135,18 @@ export async function login(req, res) {
         role: user.role
     }, process.env.JWT_SECRET, { expiresIn: "7d" });
 
-    res.cookie("token", token);
+    const isHttps = req.secure || req.headers['x-forwarded-proto'] === 'https';
+
+    res.cookie("token", token, {
+        httpOnly: true,
+        sameSite: isHttps ? 'none' : 'lax',
+        secure: isHttps,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
 
     return res.status(200).json({
         message: "User logged in successfully",
+        token,
         user: {
             id: user._id,
             fullName: user.fullName,
